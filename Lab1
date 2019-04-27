@@ -1,5 +1,64 @@
-# This SQL program utilizes the 'classicmodels' schema in MySQL Workbench
+# This SQL program utilizes the 'classicmodels' schema in MySQL Workbench.
 
-# Objective: How many rows are in the Orders table?
+# Objective 1: How many rows are in the Orders table?
 
-SELECT COUNT(*) FROM classicmodels.orders;
+  SELECT COUNT(*) FROM classicmodels.orders;
+
+# Objective 2: List all columns for all orders in reverse numerical order(largest to smallest)
+#              by order number in the Orders table. Limit output to the first 5 rows.
+
+  SELECT *
+  FROM classicmodels.orders
+  ORDER BY orderNumber DESC
+  LIMIT 5;
+  
+# Objective 3: What are the earliest and latest order dates in the Orders table?
+
+  Select MIN(orderDate), MAX(orderDate) FROM classicmodels.orders;
+  
+# Objective 4: List employee first names in alphabetical order and a count of employees that
+#              have each first name.
+ 
+ Select firstName, COUNT(*) FROM classicmodels.employees
+ GROUP BY firstName
+ ORDER BY firstName ASC;
+ 
+# Objective 5: What orders do NOT have a status of "Cancelled"? Sort by order number.
+
+Select orderNumber FROM classicmodels.orders
+WHERE (status != 'Cancelled')
+ORDER BY orderNumber;
+
+# Objective 6: Update Steve Patterson's first name to Steven in the employees table.
+#             Ensure that your update will not change a person whose first name is Steve
+#             but whose last name is not Patterson.
+
+UPDATE classicmodels.employees
+SET firstName = 'Steven'
+WHERE (employeeNumber = 1216);
+
+# Objective 7: List customer name, contact last name, contact first name, phone, city, and
+#             credit limit for customers in the cities of Paris or Lyon in France and who 
+#             have a credit limit between 100000 and 130000.
+
+SELECT customerName, contactLastName, contactFirstName, phone, city, creditLimit
+FROM classicmodels.customers
+WHERE (country = 'France') AND (city = 'Paris' OR city = 'Lyon')
+AND (creditLimit > 100000 AND creditLimit < 130000);
+
+# Objective 8: List the year, month and total amount of payments for each month. 
+#             Order by year and month.
+
+SELECT YEAR(paymentDate), MONTH(paymentDate), SUM(amount) FROM classicmodels.payments
+GROUP BY YEAR(paymentDate), MONTH(paymentDate)
+ORDER BY YEAR(paymentDate), MONTH(paymentDate);
+
+# Objective 9: What is the average payment amount?
+
+SELECT AVG(amount) from classicmodels.payments;
+
+# Objective 10: Which employees have a last name of Jones OR a first name of Andy?
+
+SELECT employeeNumber, lastName, firstName FROM classicmodels.employees
+WHERE (lastName = 'Jones') OR (firstName = 'Andy')
+ORDER BY employeeNumber;
