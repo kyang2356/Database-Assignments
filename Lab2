@@ -1,1 +1,85 @@
+# This SQL program utilizes the 'classicmodels' schema in MySQL Workbench.
 
+#Objective 1: How many customers have placed an order? 
+(Hint: count a customer one time if the customer has multiple orders)
+
+  select count(distinct customerNumber) as orders_placed  
+  from orders;
+
+#Objective 2: List the names (customer name, not contact names) of all customers who have placed an order.
+(Hint: list a customer one time if the customer has multiple orders)
+
+  select distinct(customerName) 
+  from customers as c
+  inner join orders as o on c.customerNumber = o.customerNumber;
+  
+#Objective 3: List the names of all customers who have not placed an order.
+
+  select customerName   
+  from customers as c left outer join orders as o on c.customerNumber = o.customerNumber
+  where o.orderNumber is null;
+  
+#Objective 4: List all customer orders where the order has not been “Cancelled.” 
+Include the order number, order date, order status and customer’s name.
+
+  select customerName, o.orderNumber, o.orderDate, o.status    
+  from orders as o
+  inner join customers as c on c.customerNumber = o.customerNumber 
+  where o.status != 'Cancelled';
+
+#Objective 5:	List all customers’ names with each product that customer has ordered. 
+Include customers who do not have an order. Include the product name of the item ordered.  
+If a customer has ordered the same product multiple times, only list the product once for that customer.
+(Hint: you will need to join 4 tables.)
+
+  select distinct c.customerName, p.productName
+  from customers as c
+  left outer join orders as o on c.customerNumber = o.customerNumber
+  left outer join orderdetails as d on o.orderNumber = d.orderNumber
+  left outer join products as p on d.productCode = p.productCode
+  order by c.customerName;
+
+#Objective 6:	List products for Motorcycle, Ship, and Train product lines that have quantity in stock.
+(Hint:  You can do this with a combination of AND/OR constructs.  If you do, be sure to use parenthesis 
+to group the operations.  Otherwise you can do this with a single AND and an IN comparison operator.  
+You can look up the IN operator in the MySQL reference manual.)
+
+  select productName
+  from products 
+  where (quantityInStock > 0) and (productLine in ('Motorcycles','Ships','Trains'));
+  
+ #Objective 7:	List product line, product code, product name, and total ordered quantity sorted by total 
+ ordered quantity in decreasing order. Include products with no orders (return 0 total quantity ordered for products with no orders).
+ 
+  select p.productName, p.productLine, p.productCode, ifnull(sum(o.quantityOrdered),0) as TotalquantityOrdered
+  from products as p
+  left join orderdetails as o on p.productCode = o.productCode
+  group by productName, productLine, productCode
+  order by TotalquantityOrdered desc;
+ 
+#Objective 8:	List the names of customers and how many distinct products they have ordered where that customer 
+has ordered 40 or more distinct products.
+(Hint: Make sure you get only distinct products.)
+
+  select c.customerName, count(distinct od.productCode) as distinctproducts
+  from customers as c
+  inner join orders as o on c.customerNumber = o.customerNumber
+  inner join orderdetails as od on o.orderNumber = od.orderNumber
+  group by c.customerName
+  having distinctproducts >= 40;
+  
+#Objective 9:	List the names of all customers who have placed an order and the total dollar amount ordered by that customer. 
+(Hint:  To get the dollar amount for an order, you will need to multiply the order quantity by the price of each in the order 
+detail table.)
+
+  select c.customerName, sum(od.quantityOrdered * od.priceEach) as Totaldollaramount
+  from customers as c
+  inner join orders as o on c.customerNumber = o.customerNumber
+  inner join orderdetails as od on od.orderNumber = o.orderNumber
+  group by c.customerName;
+  
+ #Objective 10:	List the names and customer numbers of all customers and the total dollar amount paid by that customer. 
+ If the customer hasn’t made any payments, list 0 for the total amount paid for that customer. 
+ 
+ 
+ 
