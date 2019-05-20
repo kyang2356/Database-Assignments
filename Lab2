@@ -48,8 +48,8 @@ You can look up the IN operator in the MySQL reference manual.)
   from products 
   where (quantityInStock > 0) and (productLine in ('Motorcycles','Ships','Trains'));
   
- #Objective 7:	List product line, product code, product name, and total ordered quantity sorted by total 
- ordered quantity in decreasing order. Include products with no orders (return 0 total quantity ordered for products with no orders).
+#Objective 7:	List product line, product code, product name, and total ordered quantity sorted by total 
+ordered quantity in decreasing order. Include products with no orders (return 0 total quantity ordered for products with no orders).
  
   select p.productName, p.productLine, p.productCode, ifnull(sum(o.quantityOrdered),0) as TotalquantityOrdered
   from products as p
@@ -78,8 +78,11 @@ detail table.)
   inner join orderdetails as od on od.orderNumber = o.orderNumber
   group by c.customerName;
   
- #Objective 10:	List the names and customer numbers of all customers and the total dollar amount paid by that customer. 
- If the customer hasn’t made any payments, list 0 for the total amount paid for that customer. 
+#Objective 10:	List the names and customer numbers of all customers and the total dollar amount paid by that customer. 
+If the customer hasn’t made any payments, list 0 for the total amount paid for that customer. 
  
- 
+  select c.customerName, c.customerNumber, sum(ifnull(p.amount,0)) as Total_paid
+  from customers as c
+  left join payments as p on c.customerNumber = p.customerNumber
+  group by c.customerName, c.customerNumber;
  
