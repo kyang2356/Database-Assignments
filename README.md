@@ -1,4 +1,5 @@
 # SQL
-SQL assignments from class
 
-All SQL statements are mine.
+SQL assignments 
+
+All SQL assignments are SQL laboratories that are derived from college coursework and are mine.
