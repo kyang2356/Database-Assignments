@@ -1,4 +1,58 @@
 # This SQL program utilizes the 'sakila' and 'sakila_dw' schemas in MySQL Workbench.
 # This program include the exploration of the data warehouse(sakila_dw)
+# Each Objective will include queries for the transactional database and the data warehouse database
 
-# Objective 
+# Objective 1: List store id, film title, and a count of how many times each film 
+was rented at each store in 2006.  Sort by store id then film title.
+  
+  SAKILA:
+  
+  /* 'use sakila;' can be utilized here, but the outcome will be the same with, or without the statement */
+  select store_id, title, count(*) as rental_count
+  from rental as r
+  inner join inventory as i on r.inventory_id = i.inventory_id
+  inner join film as f on i.film_id = f.film_id
+  where year(r.rental_date) = "2006"
+  group by i.store_id, f.title
+  order by i.store_id, f.title;
+  
+  SAKILA_DW:
+  
+  use sakila_dwh;   /* example */
+  select s.store_id, f.film_title, sum(r.count_rentals) as rental_count
+  from fact_rental as r
+  inner join dim_film as f on r.film_key = f.film_key
+  inner join dim_store as s on r.store_key = s.store_key
+  inner join dim_date as d on r.rental_date_key = d.date_key
+  where d.year4 = 2006
+  group by f.film_title, s.store_id
+  order by f.film_title, s.store_id;
+  
+ # Objective 2:	How many rentals did each store achieve for each month in 2005?  Sort by store and month
+ 
+  SAKILA:
+  
+  use sakila;
+  select i.store_id, month(r.rental_date) as month, count(*) as rental_count
+  from rental as r
+  inner join inventory as i on r.inventory_id = i.inventory_id
+  where year(r.rental_date) = 2005
+  group by i.store_id, month
+  order by i.store_id, month;
+  
+  SAKILA_DW:
+  
+  use sakila_dwh;
+  select s.store_id, sum(r.count_rentals) as rentals, d.month_number as month
+  from fact_rental as r
+  inner join dim_store as s on r.store_key = s.store_key
+  inner join dim_date as d on r.rental_date_key = d.date_key
+  where d.year4 = 2005
+  group by s.store_id, month
+  order by s.store_id, month;
+  
+  #Objective 3:	List the top 5 films by total rental count in May 2005. (don’t worry about ties – just 
+  output 5 rows).   Include the film title and the total number of times it was rented.   Order by number 
+  of rentals in decreasing order.
+  
+  
