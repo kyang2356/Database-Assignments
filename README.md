@@ -1,5 +1,5 @@
-# SQL
+# SQL / Neo4j
 
-SQL assignments 
+SQL and Neo4j assignments from my Introduction to Databases course 
 
-All SQL assignments are SQL laboratories that are derived from college coursework and are mine.
+All assignments are laboratories that are derived from college coursework and are mine.
