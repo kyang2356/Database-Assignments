@@ -1,0 +1,44 @@
+#This program utilizes Neo4j and pertains to the exploration of the movie database
+#All lines are mine.
+
+The movie database has two types of nodes:  Person and Movie.  There are 6 edge/relationship types in the database.  Five of them: ACTED_IN, 
+REVIEWED, PRODUCED, WROTE and DIRECTED relate Person and Movie.  Those relationships are all directional from Person to Movie.  
+There is also a FOLLOWS relationship that can relate one person to another.
+The nodes and relationships have properties.  Important ones that you will feed for the lab are:
+
+Node or Relationship	   Properties
+Person	                 Name
+Movie	                   Title
+ACTED_IN	               roles
+REVIEWED	               summary, rating
+
+1. Return a graph that just has one node, the node for the Person named Rob Reiner.
+
+  MATCH (RR: Person {name:"Rob Reiner"}) return RR
+  
+2. To the graph returned in question 1, add the movies that Rob Reiner directed.
+
+  MATCH (RR: Person {name:"Rob Reiner"}) -[:DIRECTED]-> (d) return RR, d
+  
+3. To the graph returned in question 2, add the people who acted in the movies that Rob Reiner directed.
+
+  MATCH (RR: Person {name:"Rob Reiner"}) -[:DIRECTED]-> (d) <-[:ACTED_IN]- (a) return RR, d, a
+  
+4. Retrieve a graph of movies that were directed by any people who acted in movies that were directed by Rob Reiner.  
+   In the graph, illustrate Rob Reiner, the movie(s) he directed that the actor(s) acted in, the actor(s) and the movie(s) 
+   that the actor(s) directed. (Hint:  You can do this using the query from question 3 extended through one more relationship.  
+   Do not be surprised if this query returns far fewer nodes and relationships than question 3.)
+   
+  MATCH (RR: Person {name:"Rob Reiner"}) -[:DIRECTED]-> (d) <-[:ACTED_IN]- (a) 
+  MATCH (a) -[:DIRECTED]-> (b) <-[:ACTED_IN]- (c) 
+  return RR, d, a, b, c
+  
+5. Return a graph that shows every person who has reviewed a movie and the movies those people have reviewed.
+
+  MATCH (re: Person) -[:REVIEWED]-> (a) RETURN re, a
+  
+6. To the graph returned in question 5, add the people who directed those reviewed movies.
+
+  MATCH (re: Person) -[:REVIEWED]-> (a) <-[:DIRECTED]- (b) RETURN re, a, b
+  
+  
